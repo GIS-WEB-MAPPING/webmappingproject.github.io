@@ -6,3 +6,8 @@ var map = L.map('map').setView([29.8884, -97.9384], 14);
       attribution: '&copy; ' + mapLink + ' Contributors',
       maxZoom: 18,
       }).addTo(map);
+
+  var center = [-95.789, 45.244];
+  var radius = 15;
+  var options = { steps: 20, units: "miles", properties: { foo: "bar" } };
+  var circle = L.circle([51.508, -0.11], { color: 'blue', fillColor: '#00f',fillOpacity: 0.5, radius: 500}).addTo(mymap);
