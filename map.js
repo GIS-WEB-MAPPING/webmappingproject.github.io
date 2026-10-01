@@ -6,3 +6,16 @@ var map = L.map('map').setView([29.8884, -97.9384], 14);
       attribution: '&copy; ' + mapLink + ' Contributors',
       maxZoom: 18,
       }).addTo(map);
+
+  var polygon = turf.polygon(
+    [
+      [
+        [-5, 52],
+        [-4, 56],
+        [-2, 51],
+        [-7, 54],
+        [-5, 52],
+      ],
+    ],
+    {name: poly1},
+  );
