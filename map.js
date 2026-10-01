@@ -30,6 +30,5 @@ console.log(`Bearing: ${angle} degrees`);
     {name: poly1},
   );
   var area = turf.area(polygon);
-  <div id="area"></div>
   document.getElementById("area").innerHTML =
   "Polygon area: " + areaKm.toFixed(2) + " km²";
