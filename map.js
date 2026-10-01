@@ -16,3 +16,15 @@ const point1 = point([33.1434, -117.166]);
 const point2 = point([33.1434, -117.466]);
 const angle = bearing(point1, point2);
 console.log(`Bearing: ${angle} degrees`);
+  var polygon = turf.polygon(
+    [
+      [
+        [-5, 52],
+        [-4, 56],
+        [-2, 51],
+        [-7, 54],
+        [-5, 52],
+      ],
+    ],
+    {name: poly1},
+  );
