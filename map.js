@@ -1,8 +1,8 @@
 var map = L.map('map').setView([29.8884, -97.9384], 14);
   mapLink =
-      '<a href="http://openstreetmap.org">OpenStreetMap</a>';
+      '<a href="https://openstreetmap.org">OpenStreetMap</a>';
   L.tileLayer(
-      'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
       attribution: '&copy; ' + mapLink + ' Contributors',
       maxZoom: 18,
       }).addTo(map);
@@ -16,3 +16,15 @@ const point1 = point([33.1434, -117.166]);
 const point2 = point([33.1434, -117.466]);
 const angle = bearing(point1, point2);
 console.log(`Bearing: ${angle} degrees`);
+  var polygon = turf.polygon(
+    [
+      [
+        [-5, 52],
+        [-4, 56],
+        [-2, 51],
+        [-7, 54],
+        [-5, 52],
+      ],
+    ],
+    {name: poly1},
+  );
