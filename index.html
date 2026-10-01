@@ -4,7 +4,6 @@
     <title>Full Screen Leaflet Map</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"/>
-    />
     <style>
         body {
             padding: 0;
@@ -21,16 +20,8 @@
 
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 
-    <script>
-        var map = L.map('map').setView([29.8884, -97.9384], 14);
-        mapLink =
-            '<a href="http://openstreetmap.org">OpenStreetMap</a>';
-        L.tileLayer(
-            'http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            attribution: '&copy; ' + mapLink + ' Contributors',
-            maxZoom: 18,
-            }).addTo(map);
-    </script>
+    <script src="map.js"></script>
+
 </body>
 </html>
 >>>>>>> 7444be8ce40859a9783e05ea00a923652b89e4a2
