@@ -10,7 +10,12 @@ L.tileLayer(
 var center = [-95.789, 45.244];
 var radius = 15;
 var options = { steps: 20, units: "miles", properties: { foo: "bar" } };
-var circle = L.circle([51.508, -0.11], { color: 'blue', fillColor: '#00f',fillOpacity: 0.5, radius: 500}).addTo(mymap);
+var circle = L.circle([51.508, -0.11], {
+  color: 'blue',
+  fillColor: '#00f',
+  fillOpacity: 0.5,
+  radius: 500
+}).addTo(map);
 
 import { point, bearing } from '@turf/turf';
 const point1 = point([33.1434, -117.166]);
@@ -28,5 +33,5 @@ console.log(`Bearing: ${angle} degrees`);
         [-5, 52],
       ],
     ],
-    {name: poly1},
+    {name: "poly1"},
   );
