@@ -1,9 +1,60 @@
+
 body {
   padding: 0;
   margin: 0;
 }
 
-html, body, #map {
+html, body {
   height: 100%;
   width: 100%;
+}
+
+#map {
+  height: 100%;
+  width: 100%;
+  position: relative;
+}
+
+#header {
+  background-color: #0571b0;
+}
+
+.dropdown {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.dropbtn {
+    background-color: white;
+    color: black;
+    padding: 10px 15px;
+    border: 1px solid #ccc;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: white;
+    min-width: 160px;
+    box-shadow: 0px 4px 8px rgba(0,0,0,0.2);
+}
+
+.dropdown-content a {
+    display: block;
+    padding: 10px;
+    color: black;
+    text-decoration: none;
+}
+
+.dropdown:hover .dropdown-content {
+    display: block;
+}
+
+.dropdown-content a:hover {
+    background-color: #eee;
 }
