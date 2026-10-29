@@ -10,13 +10,14 @@ html, body {
 }
 
 #map {
-  height: 80%;
-  width: 80%;
+  height: 100%;
+  width: 100%;
   position: relative;
+  z-index: -1;
 }
 
 #header {
-  position: fixed;
+  position: absolute;
   background-color: #0571b0;
   top: 0;
   left: 0;
