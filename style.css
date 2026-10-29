@@ -10,13 +10,18 @@ html, body {
 }
 
 #map {
-  height: 80%;
-  width: 80%;
+  height: 100%;
+  width: 100%;
   position: relative;
+  z-index: -1;
 }
 
 #header {
+<<<<<<< HEAD
   position: relative;
+=======
+  position: absolute;
+>>>>>>> ec8dc8bb3a7ba4d66fde483df0ea007f7a48a94d
   background-color: #0571b0;
   top: 0;
   left: 0;
