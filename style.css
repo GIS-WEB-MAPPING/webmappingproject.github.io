@@ -16,7 +16,12 @@ html, body {
 }
 
 #header {
+  position: fixed;
   background-color: #0571b0;
+  top: 0;
+  left: 0;
+  width: 100%
+  z-index: 1000;
 }
 
 .dropdown {
