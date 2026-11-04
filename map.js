@@ -6,3 +6,6 @@ L.tileLayer(
     attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
     maxZoom: 20
   }).addTo(map);
+
+src="https://unpkg.com/esri-leaflet@3.0.19/dist/esri-leaflet.js"
+  const webMapId = 'd76f7166f7cf409895b8b95219ace470';
