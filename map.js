@@ -7,5 +7,22 @@ L.tileLayer(
     maxZoom: 20
   }).addTo(map);
 
-src="https://unpkg.com/esri-leaflet@3.0.19/dist/esri-leaflet.js"
   const webMapId = 'd76f7166f7cf409895b8b95219ace470';
+
+  fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`)
+    .then(response => response.json())
+    .then(webMap => {
+      console.log("ArcGIS Web Map:", webMap);
+      webMap.operationalLayers.forEach(layer => {
+        if (layer.url && layer.url.includes('/FeatureServer')) {
+          L.esri.featureLayer({
+            url: layer.url
+          }).addTo(map);
+        }
+        else if (layer.url && layer.url.includes('/MapServer')) {
+          L.esri.dynamicMapLayer({
+            url: layer.url,
+          }).addTo(map);
+        }
+      });
+    })
