@@ -22,6 +22,7 @@ L.tileLayer(
         else if (layer.url && layer.url.includes('/MapServer')) {
           L.esri.dynamicMapLayer({
             url: layer.url,
+            opacity: 1;
           }).addTo(map);
         }
       });
