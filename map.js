@@ -28,8 +28,8 @@ L.tileLayer(
       });
     })
 
-    const iconSymbol = new PictureMarkerSymbol({
-        url: "https://img.icons8.com/?size=100&id=73aABFv7KJOX&format=png&color=000000"
+    const iconSymbol = L.icon({
+        url: "https://img.icons8.com/?size=100&id=73aABFv7KJOX&format=png&color=000000",
         width: "20px",
         height: "20px"
       });
