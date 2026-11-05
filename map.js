@@ -12,22 +12,25 @@ L.tileLayer(
   fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`)
     .then(response => response.json())
     .then(webMap => {
-      console.log("ArcGIS Web Map:", webMap);
-      webMap.operationalLayers.forEach(layer => {
-        if (layer.url && layer.url.includes('/FeatureServer')) {
-          L.esri.featureLayer({
-            url: layer.url
-          }).addTo(map);
-        }
-        else if (layer.url && layer.url.includes('/MapServer')) {
-          L.esri.dynamicMapLayer({
-            url: layer.url,
-            opacity: 0.8
-          }).addTo(map);
-        }
-      });
-    })
-
+        console.log("ArcGIS Web Map:", webMap);
+        webMap.operationalLayers.forEach(layer => {
+            if (layer.url && layer.url.includes('/FeatureServer')) {
+                L.esri.featureLayer({
+                    url: layer.url,
+                    pointToLayer: function (geojson, latlng) {
+                        return L.marker(latlng, {
+                            icon: iconSymbol
+                        });
+                    }
+                }).addTo(map);
+            } else if (layer.url && layer.url.includes('/MapServer')) {
+                L.esri.dynamicMapLayer({
+                    url: layer.url,
+                    opacity: 0.8
+                }).addTo(map);
+            }
+        });
+    });
     const iconSymbol = L.icon({
         iconUrl: 'https://img.icons8.com/?size=100&id=73aABFv7KJOX&format=png&color=000000',
         iconSize: [24, 24],
