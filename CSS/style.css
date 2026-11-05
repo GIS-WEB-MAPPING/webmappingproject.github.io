@@ -118,7 +118,7 @@ html, body {
 }
 
 #sidebar {
-    width: 115px;
+    width: 300px;
     flex-shrink: 0;
     background-color: var(--maroon);
     border-left: 2px solid var(--border);
