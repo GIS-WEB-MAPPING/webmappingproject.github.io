@@ -93,7 +93,7 @@ html, body {
     padding: 12px;
     color: var(--gold);
     text-align: left;
-    font-size: 12px;
+    font-size: 20px;
     text-decoration: none;
 }
 
@@ -111,14 +111,14 @@ html, body {
 }
 
 #dashboard {
-    height: calc(100% - 82px);
+    height: calc(100% - 90px);
     width: 100%;
     display: flex;
     overflow: hidden;
 }
 
 #sidebar {
-    width: 300px;
+    width: 350px;
     flex-shrink: 0;
     background-color: var(--maroon);
     border-left: 2px solid var(--border);
