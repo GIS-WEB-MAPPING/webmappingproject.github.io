@@ -7,74 +7,33 @@ L.tileLayer(
     maxZoom: 20
   }).addTo(map);
 
-  const iconSymbol = L.icon({
-      iconUrl: 'https://img.icons8.com/?size=100&id=73aABFv7KJOX&format=png&color=000000',
-      iconSize: [24, 24],
-      iconAnchor: [0, 25]
-    });
+  const webMapIds = 'd76f7166f7cf409895b8b95219ace470';
 
-  const webMapIds = [
-    'd76f7166f7cf409895b8b95219ace470',
-    '6f252d54f28a463ba592bd3d6c9e90d9'
-  ]
-
-  let currentMapIndex = 0;
-  let currentLayers = [];
-
-  const slider = L.control({ position: 'topright' });
-    slider.onAdd = function(map) {
-        const container = L.DomUtil.create('div', 'map-slider');
-          container.innerHTML = `
-                <label><b>Switch Web Maps</b></label>
-                <input
-                  id="webMapSlider"
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="1"
-                  value="0"
-                  />
-                  <div id="sliderLabel">Map 1</div>
-                `;
-        L.DomEvent.disableClickPropagation(container);
-        return container;
-    };
-    slider.addTo(map);
-      function loadWebMap(index) {
-      currentMapIndex = index;
-      document.getElementById('sliderLabel').innerText =
-          index === 0 ? 'Map 1' : 'Map 2';
-      currentLayers.forEach(layer => map.removeLayer(layer));
-      currentLayers = [];
-      const webMapId = webMapIds[index];
-
-      fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`)
-        .then(response => response.json())
-        .then(webMap => {
-            console.log("ArcGIS Web Map:", webMap);
-            webMap.operationalLayers.forEach(layer => {
-                if (layer.url && layer.url.includes('/FeatureServer')) {
-                  const feature = L.esri.featureLayer({
+  fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`)
+    .then(response => response.json())
+    .then(webMap => {
+        console.log("ArcGIS Web Map:", webMap);
+        webMap.operationalLayers.forEach(layer => {
+            if (layer.url && layer.url.includes('/FeatureServer')) {
+                L.esri.featureLayer({
                     url: layer.url,
                     pointToLayer: function (geojson, latlng) {
                         return L.marker(latlng, {
                             icon: iconSymbol
                         });
                     }
-                  }).addTo(map);
-                  currentLayers.push(feature);
-                } else if (layer.url && layer.url.includes('/MapServer')) {
-                  const dynamic = L.esri.dynamicMapLayer({
+                }).addTo(map);
+            } else if (layer.url && layer.url.includes('/MapServer')) {
+                L.esri.dynamicMapLayer({
                     url: layer.url,
                     opacity: 0.8
-                  }).addTo(map);
-                  currentLayers.push(dynamic);
-                }
-            });
-        })
-        .catch(error => console.error("Map loading error:", error));
-      }
-      document.getElementById('webMapSlider').addEventListener('input', function() {
-          loadWebMap(Number(this.value));
+                }).addTo(map);
+            }
+        });
+    });
+    const iconSymbol = L.icon({
+        iconUrl: 'https://img.icons8.com/?size=100&id=73aABFv7KJOX&format=png&color=000000',
+        iconSize: [24, 24],
+        iconAnchor: [0, 25]
       });
-      loadWebMap(0);
+// 6f252d54f28a463ba592bd3d6c9e90d9
