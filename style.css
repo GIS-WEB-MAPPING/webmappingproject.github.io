@@ -156,3 +156,10 @@ html, body {
 .about-content a:hover {
   text-decoration: underline;
 }
+
+.map-slider {
+  background: white;
+  padding:12px;
+  border-radius:8px;
+  width:200px;"
+}

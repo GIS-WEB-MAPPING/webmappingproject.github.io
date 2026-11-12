@@ -7,9 +7,45 @@ L.tileLayer(
     maxZoom: 20
   }).addTo(map);
 
-  const webMapId = 'd76f7166f7cf409895b8b95219ace470';
+  const webMapIds = [
+    'd76f7166f7cf409895b8b95219ace470',
+    '6f252d54f28a463ba592bd3d6c9e90d9'
+  ]
 
-  fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`)
+  let currentMapIndex = 0;
+  let currentLayers = [];
+
+  const slider = L.control({ position: 'topright' });
+    slider.onAdd = function(map) {
+        const container = L.DomUtil.create('div', 'map-slider');
+          container.innerHTML =
+                <label><b>Switch Web Maps</b></label>
+                <input
+                  id="webMapSlider"
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="1"
+                  value="0"
+                  />
+                  <div id="sliderLabel">Map 1</div>
+                ;
+        L.DomEvent.disableClickPropagation(container);
+        return container;
+    };
+    slider.addTo(map);
+    document.getElementById('webMapSlider').addEventListener('input', function() {
+        currentMapIndex = Number(this.value);
+        document.getElementById('webMapSlider').dispatchEvent(
+          new Event('input')
+          );
+        document.getElementById('sliderLabel').innerText =
+            currentMapIndex === 0 ? 'Map 1' : 'Map 2';
+        currentLayers.forEach(layer => map.removeLayer(layer));
+        currentLayers = [];
+        const webMapId = webMapIds[currentMapIndex];
+
+  fetch('https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json')
     .then(response => response.json())
     .then(webMap => {
         console.log("ArcGIS Web Map:", webMap);
