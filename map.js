@@ -48,31 +48,32 @@ L.tileLayer(
       currentLayers = [];
       const webMapId = webMapIds[index];
 
-  fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`)
-    .then(response => response.json())
-    .then(webMap => {
-        console.log("ArcGIS Web Map:", webMap);
-        webMap.operationalLayers.forEach(layer => {
-            if (layer.url && layer.url.includes('/FeatureServer')) {
-              const feature = L.esri.featureLayer({
-                url: layer.url,
-                pointToLayer: function (geojson, latlng) {
-                    return L.marker(latlng, {
-                        icon: iconSymbol
-                    });
+      fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`)
+        .then(response => response.json())
+        .then(webMap => {
+            console.log("ArcGIS Web Map:", webMap);
+            webMap.operationalLayers.forEach(layer => {
+                if (layer.url && layer.url.includes('/FeatureServer')) {
+                  const feature = L.esri.featureLayer({
+                    url: layer.url,
+                    pointToLayer: function (geojson, latlng) {
+                        return L.marker(latlng, {
+                            icon: iconSymbol
+                        });
+                    }
+                  }).addTo(map);
+                  currentLayers.push(feature);
+                } else if (layer.url && layer.url.includes('/MapServer')) {
+                  const dynamic = L.esri.dynamicMapLayer({
+                    url: layer.url,
+                    opacity: 0.8
+                  }).addTo(map);
+                  currentLayers.push(dynamic);
                 }
-              }).addTo(map);
-              currentLayers.push(feature);
-            } else if (layer.url && layer.url.includes('/MapServer')) {
-              const dynamic = L.esri.dynamicMapLayer({
-                url: layer.url,
-                opacity: 0.8
-              }).addTo(map);
-              currentLayers.push(dynamic);
-            }
-        });
-    })
-
+            });
+        })
+        .catch(error => console.error("Map loading error:", error));
+      }
       document.getElementById('webMapSlider').addEventListener('input', function() {
           loadWebMap(Number(this.value));
       });
