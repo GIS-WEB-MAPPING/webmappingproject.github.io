@@ -7,33 +7,57 @@ L.tileLayer(
     maxZoom: 20
   }).addTo(map);
 
-  const webMapIds = 'd76f7166f7cf409895b8b95219ace470';
+  const leftWebMapId = 'd76f7166f7cf409895b8b95219ace470';
+  const rightWebMapId = '6f252d54f28a463ba592bd3d6c9e90d9';
 
-  fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`)
-    .then(response => response.json())
-    .then(webMap => {
-        console.log("ArcGIS Web Map:", webMap);
-        webMap.operationalLayers.forEach(layer => {
-            if (layer.url && layer.url.includes('/FeatureServer')) {
-                L.esri.featureLayer({
-                    url: layer.url,
-                    pointToLayer: function (geojson, latlng) {
-                        return L.marker(latlng, {
-                            icon: iconSymbol
-                        });
-                    }
-                }).addTo(map);
-            } else if (layer.url && layer.url.includes('/MapServer')) {
-                L.esri.dynamicMapLayer({
-                    url: layer.url,
-                    opacity: 0.8
-                }).addTo(map);
+  const iconSymbol = L.icon({
+  iconUrl: 'https://img.icons8.com/?size=100&id=73aABFv7KJOX&format=png&color=000000',
+  iconSize: [24, 24],
+  iconAnchor: [12, 25]
+  });
+
+  const leftLayers = L.layerGroup().addTo(map);
+  const rightLayers = L.layerGroup().addTo(map);
+
+    async function loadWebMap(webMapId, layerGroup) {
+      const response = await fetch(
+        `https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`
+      );
+      if (!response.ok) {
+        throw new Error(`Failed to fetch Web Map: ${webMapId}`);
+      }
+      const webMap = await response.json();
+      console.log("Loaded Web Map:", webMap);
+      if (!webMap.operationalLayers) {
+        throw new Error("No operational layers found in Web Map: " + webMapId);
+      }
+      webMap.operationalLayers.forEach(layer => {
+        if (layer.url && layer.url.includes('/FeatureServer')) {
+          L.esri.featureLayer({
+            url: layer.url,
+            pointToLayer: function (geojson, latlng) {
+              return L.marker(latlng, {
+                icon: iconSymbol
+              });
             }
-        });
-    });
-    const iconSymbol = L.icon({
-        iconUrl: 'https://img.icons8.com/?size=100&id=73aABFv7KJOX&format=png&color=000000',
-        iconSize: [24, 24],
-        iconAnchor: [0, 25]
+          }).addTo(layerGroup);
+        }
+        else if (layer.url && layer.url.includes('/MapServer')) {
+          L.esri.dynamicMapLayer({
+            url: layer.url,
+            opacity: 0.8
+          }).addTo(layerGroup);
+        }
       });
-// 6f252d54f28a463ba592bd3d6c9e90d9
+    }
+    Promise.all([
+      loadWebMap(leftWebMapId, leftLayers),
+      loadWebMap(rightWebMapId, rightLayers)
+    ])
+    .then(() => {
+      console.log("Both Web Maps loaded!");
+      L.control.sideBySide(
+        leftLayers,
+        rightLayers
+      ).addTo(map);
+    })
