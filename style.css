@@ -157,9 +157,22 @@ html, body {
   text-decoration: underline;
 }
 
-.map-slider {
-  background: white;
-  padding:12px;
-  border-radius:8px;
-  width:200px;
+.leaflet-sbs-divider {
+    background-color: white;
+    width: 5px;
+    cursor: ew-resize;
+    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+}
+
+.leaflet-sbs-range {
+    cursor: ew-resize;
+}
+
+.leaflet-sbs-divider:before {
+    background-color: white;
+    border: 2px solid #555;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    margin-left: -15px;
 }
