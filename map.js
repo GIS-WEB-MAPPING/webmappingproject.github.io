@@ -20,7 +20,6 @@ L.tileLayer(
   const rightLayers = []
 
   async function loadWebMap(webMapId, layerGroup) {
-
     const response = await fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`);
     if (!response.ok) {
       throw new Error(`Failed to fetch Web Map: ${webMapId}`);
