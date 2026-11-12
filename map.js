@@ -16,48 +16,54 @@ L.tileLayer(
   iconAnchor: [12, 25]
   });
 
-  const leftLayers = L.layerGroup().addTo(map);
-  const rightLayers = L.layerGroup().addTo(map);
+  const leftLayers = []
+  const rightLayers = []
 
-    async function loadWebMap(webMapId, layerGroup) {
-      const response = await fetch(
-        `https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`
-      );
-      if (!response.ok) {
-        throw new Error(`Failed to fetch Web Map: ${webMapId}`);
+  async function loadWebMap(webMapId, layerGroup) {
+
+    const response = await fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`);
+    if (!response.ok) {
+      throw new Error(`Failed to fetch Web Map: ${webMapId}`);
+    }
+    const webMap = await response.json();
+    console.log("Loaded Web Map:", webMap);
+    if (!webMap.operationalLayers) {
+      throw new Error("No operational layers found");
+    }
+    webMap.operationalLayers.forEach(layer => {
+      if (layer.url && layer.url.includes('/FeatureServer')) {
+        const newLayer = L.esri.featureLayer({
+          url: layer.url,
+          pointToLayer: function (geojson, latlng) {
+            return L.marker(latlng, {
+              icon: iconSymbol
+            });
+          }
+        });
+        newLayer.addTo(map);
+        layerGroup.push(newLayer);
       }
-      const webMap = await response.json();
-      console.log("Loaded Web Map:", webMap);
-      if (!webMap.operationalLayers) {
-        throw new Error("No operational layers found in Web Map: " + webMapId);
+      else if (layer.url && layer.url.includes('/MapServer')) {
+        const newLayer = L.esri.dynamicMapLayer({
+          url: layer.url,
+          opacity: 0.8
+        });
+        newLayer.addTo(map);
+        layerGroup.push(newLayer);
       }
-      webMap.operationalLayers.forEach(layer => {
-        if (layer.url && layer.url.includes('/FeatureServer')) {
-          L.esri.featureLayer({
-            url: layer.url,
-            pointToLayer: function (geojson, latlng) {
-              return L.marker(latlng, {
-                icon: iconSymbol
-              });
-            }
-          }).addTo(layerGroup);
-        }
-        else if (layer.url && layer.url.includes('/MapServer')) {
-          L.esri.dynamicMapLayer({
-            url: layer.url,
-            opacity: 0.8
-          }).addTo(layerGroup);
-        }
-      });
+    });
     }
     Promise.all([
-      loadWebMap(leftWebMapId, leftLayers),
-      loadWebMap(rightWebMapId, rightLayers)
+    loadWebMap(leftWebMapId, leftLayers),
+    loadWebMap(rightWebMapId, rightLayers)
     ])
     .then(() => {
-      console.log("Both Web Maps loaded!");
-      L.control.sideBySide(
-        leftLayers,
-        rightLayers
-      ).addTo(map);
+    console.log("Both Web Maps loaded!");
+    console.log("Left layers:", leftLayers);
+    console.log("Right layers:", rightLayers);
+    const swipe = L.control.sideBySide(
+      leftLayers,
+      rightLayers
+    );
+    swipe.addTo(map);
     })
