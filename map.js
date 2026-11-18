@@ -51,22 +51,23 @@ L.tileLayer(
     });
     }
     Promise.all([
-  loadWebMap(leftWebMapId, leftLayers),
-  loadWebMap(rightWebMapId, rightLayers)
-  ])
-  .then(() => {
-    console.log("Both Web Maps loaded!");
-    console.log("Left layers:", leftLayers);
-    console.log("Right layers:", rightLayers);
-    if (!L.control.sideBySide) {
-      throw new Error("Leaflet SideBySide plugin is not loaded");
-    }
-    if (leftLayers.length === 0 || rightLayers.length === 0) {
-      throw new Error("One or both Web Maps have no supported layers");
-    }
-    const swipe = L.control.sideBySide(
-      leftLayers,
-      rightLayers
-    );
-    swipe.addTo(map);
-  })
+    loadWebMap(leftWebMapId, leftLayers),
+    loadWebMap(rightWebMapId, rightLayers)
+    ])
+
+    .then(() => {
+        console.log("Both Web Maps loaded!");
+        if (typeof L.control.sideBySide !== 'function') {
+            throw new Error("SideBySide plugin is not loaded");
+        }
+        if (leftLayers.length === 0 || rightLayers.length === 0) {
+            throw new Error("One or both Web Maps have no supported layers");
+        }
+        leftLayers.forEach(layer => layer.addTo(map));
+        rightLayers.forEach(layer => layer.addTo(map));
+        const swipe = L.control.sideBySide(
+            leftLayers,
+            rightLayers
+        );
+        swipe.addTo(map);
+      })

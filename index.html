@@ -3,33 +3,30 @@
 <head>
     <title>Buc-ee's</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+    <link rel="stylesheet" href="style.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
     <script src="https://unpkg.com/esri-leaflet@3.0.15/dist/esri-leaflet.js"></script>
-    <script src="https://unpkg.com/leaflet-side-by-side@2.2.0/layout.js"></script>
-    <link rel="stylesheet" href="style.css"/>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet-side-by-side@2.2.0/layout.css"/>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-side-by-side@2.2.0/index.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
 </head>
 <body>
   <div id="header">
     <h1>Locational and Empirical Analysis of Buc-ees Gas Station Growth over 20 years</h1>
-
       <div class="dropdown">
         <a href="aboutus.html" class="dropbtn">About Us</a>
       </div>
     </div>
-
     <div id="dashboard">
       <aside id="sidebar">
         <a href="#information">Information<br>About Buc-ee's</a>
         <a href="#query">Gas<br>Station<br>Query</a>
         <a href="#data">Data</a>
       </aside>
-
       <main id="map"></main>
     </div>
-
-      <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7/turf.min.js"></script>
       <script src="map.js"></script>
-
 </body>
 </html>
