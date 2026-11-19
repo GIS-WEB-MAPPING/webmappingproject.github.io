@@ -1,70 +1,62 @@
-var map = L.map('map').setView([29.8884, -97.9384], 14);
-mapLink = '<a href="https://openstreetmap.org">OpenStreetMap</a>';
-var carto_api_key = 'cb1_4dob_1_eb95857fcdb8ab26ee79db28';
-L.tileLayer(
-  'https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png?key=' + carto_api_key, {
-    attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
-    maxZoom: 20
-  }).addTo(map);
-
+  var map = L.map('map').setView([29.8884, -97.9384], 14);
+  L.tileLayer(
+    'https://basemaps.cartocdn.com/rastertiles/light_all/{z}/{x}/{y}.png',
+    {
+      attribution: '&copy; OpenStreetMap contributors &copy; CARTO',
+      maxZoom: 20
+    }
+  ).addTo(map);
   const leftWebMapId = 'd76f7166f7cf409895b8b95219ace470';
   const rightWebMapId = '6f252d54f28a463ba592bd3d6c9e90d9';
 
-  const iconSymbol = L.icon({
-  iconUrl: 'https://img.icons8.com/?size=100&id=73aABFv7KJOX&format=png&color=000000',
-  iconSize: [24, 24],
-  iconAnchor: [12, 25]
-  });
+  const leftServiceURL = 'https://services9.arcgis.com/SfvtKAxCn62UWpRg/arcgis/rest/services/Buc_ee_s_Locations_WFL1/FeatureServer/0';
+  const rightServiceURL = 'https://services9.arcgis.com/SfvtKAxCn62UWpRg/arcgis/rest/services/Buc_ee_s_Locations_WFL1/FeatureServer/1';
 
-  const leftLayers = []
-  const rightLayers = []
+  const leftLayer = L.esri.featureLayer({
+  url: leftServiceURL,
 
-  async function loadWebMap(webMapId, layerGroup) {
-    const response = await fetch(`https://www.arcgis.com/sharing/rest/content/items/${webMapId}/data?f=json`);
-    if (!response.ok) {
-      throw new Error(`Failed to fetch Web Map: ${webMapId}`);
-    }
-    const webMap = await response.json();
-    console.log("Loaded Web Map:", webMap);
-    if (!webMap.operationalLayers) {
-      throw new Error("No operational layers found");
-    }
-    webMap.operationalLayers.forEach(layer => {
-      if (layer.url && layer.url.includes('/FeatureServer')) {
-        const newLayer = L.esri.featureLayer({
-          url: layer.url,
-          pointToLayer: function (geojson, latlng) {
-            return L.marker(latlng, {
-              icon: iconSymbol
-            });
-          }
+      pointToLayer: function(feature, latlng) {
+        return L.circleMarker(latlng, {
+          radius: 7,
+          fillColor: '#2166ac',
+          color: '#ffffff',
+          weight: 1,
+          fillOpacity: 0.9
         });
-        layerGroup.push(newLayer);
-      }
-      else if (layer.url && layer.url.includes('/MapServer')) {
-        const newLayer = L.esri.dynamicMapLayer({
-          url: layer.url,
-          opacity: 0.8
-        });
-        layerGroup.push(newLayer);
       }
     });
-    }
-    Promise.all([
-    loadWebMap(leftWebMapId, leftLayers),
-    loadWebMap(rightWebMapId, rightLayers)
-    ])
 
-    .then(() => {
-      console.log("SideBySide:", typeof L.control.sideBySide);
-      if (typeof L.control.sideBySide !== 'function') {
-        throw new Error("SideBySide plugin is not loaded");
-      }
-      leftLayers.forEach(layer => layer.addTo(map));
-      rightLayers.forEach(layer => layer.addTo(map));
-      const swipe = L.control.sideBySide(
-        leftLayers,
-        rightLayers
-      );
-      swipe.addTo(map);
-      })
+  const rightLayer = L.esri.featureLayer({
+    url: rightServiceURL,
+
+    pointToLayer: function(feature, latlng) {
+      return L.circleMarker(latlng, {
+        radius: 7,
+        fillColor: '#d73027',
+        color: '#ffffff',
+        weight: 1,
+        fillOpacity: 0.9
+      });
+    }
+  });
+  leftLayer.addTo(map);
+  rightLayer.addTo(map);
+  const slider = L.control.sideBySide(
+    leftLayer,
+    rightLayer
+  );
+  slider.addTo(map);
+  const legend = L.control({position: 'bottomright'});
+  legend.onAdd = function(map) {
+    const div = L.DomUtil.create('div', 'info legend');
+    div.innerHTML = `
+      <strong>Buc-ee's Locations</strong><br>
+      <span style="color:#2166ac;">●</span> Current Locations<br>
+      <span style="color:#d73027;">●</span> 2006 Locations
+    `;
+    div.style.background = 'white';
+    div.style.padding = '10px';
+    div.style.borderRadius = '5px';
+    return div;
+  };
+  legend.addTo(map);
