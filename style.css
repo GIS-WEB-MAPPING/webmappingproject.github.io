@@ -165,45 +165,37 @@ html, body {
     position: absolute;
     top: 0;
     bottom: 0;
-    left: 50%;
     width: 3px;
     background: white;
-    border-left: 1px solid #555;
-    border-right: 1px solid #555;
     z-index: 1000;
     pointer-events: none;
 }
 
 .swipe-control {
     background: white;
-    padding: 12px 16px;
-    width: 220px;
+    padding: 12px;
     border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    width: 220px;
 }
 
 .swipe-control label {
     display: block;
-    text-align: center;
     font-weight: bold;
-    color: var(--maroon);
     margin-bottom: 8px;
 }
 
 .swipe-control input {
     width: 100%;
-    cursor: ew-resize;
+    cursor: pointer;
 }
 
 .slider-labels {
     display: flex;
     justify-content: space-between;
-    font-size: 11px;
-    font-weight: bold;
-    color: var(--maroon);
+    font-size: 12px;
 }
 
 .info.legend {
     font-size: 12px;
-    line-height: 1.7;
 }
