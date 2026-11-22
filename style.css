@@ -157,6 +157,6 @@ html, body {
   text-decoration: underline;
 }
 
-leaflet-sbs-range {
+.leaflet-sbs-range {
     cursor: ew-resize;
 }
