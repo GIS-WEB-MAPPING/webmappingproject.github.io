@@ -161,27 +161,6 @@ html, body {
     cursor: ew-resize;
 }
 
-.swipe-control {
-    background: white;
-    padding: 12px 18px;
-    border-radius: 6px;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    width: 220px;
-}
-
-.swipe-control label {
-    display: block;
-    font-weight: bold;
-    color: #5b1428;
-    margin-bottom: 8px;
-    text-align: center;
-}
-
-.swipe-control input {
-    width: 100%;
-    cursor: ew-resize;
-}
-
 .swipe-divider {
     position: absolute;
     top: 0;
@@ -193,6 +172,35 @@ html, body {
     border-right: 1px solid #555;
     z-index: 1000;
     pointer-events: none;
+}
+
+.swipe-control {
+    background: white;
+    padding: 12px 16px;
+    width: 220px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+}
+
+.swipe-control label {
+    display: block;
+    text-align: center;
+    font-weight: bold;
+    color: var(--maroon);
+    margin-bottom: 8px;
+}
+
+.swipe-control input {
+    width: 100%;
+    cursor: ew-resize;
+}
+
+.slider-labels {
+    display: flex;
+    justify-content: space-between;
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--maroon);
 }
 
 .info.legend {
