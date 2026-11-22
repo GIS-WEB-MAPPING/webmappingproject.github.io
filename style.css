@@ -160,3 +160,42 @@ html, body {
 .leaflet-sbs-range {
     cursor: ew-resize;
 }
+
+.swipe-control {
+    background: white;
+    padding: 12px 18px;
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+    width: 220px;
+}
+
+.swipe-control label {
+    display: block;
+    font-weight: bold;
+    color: #5b1428;
+    margin-bottom: 8px;
+    text-align: center;
+}
+
+.swipe-control input {
+    width: 100%;
+    cursor: ew-resize;
+}
+
+.swipe-divider {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 50%;
+    width: 3px;
+    background: white;
+    border-left: 1px solid #555;
+    border-right: 1px solid #555;
+    z-index: 1000;
+    pointer-events: none;
+}
+
+.info.legend {
+    font-size: 12px;
+    line-height: 1.7;
+}
