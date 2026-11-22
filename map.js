@@ -107,12 +107,14 @@
   );
   map.getContainer().appendChild(divider);
   function updateSlider(position) {
-      position = Math.max(0, Math.min(100, position));
-      historicalPane.style.clipPath =
-          `inset(0 ${100 - position}% 0 0)`;
-      currentPane.style.clipPath =
-          `inset(0 0 0 ${position}%)`;
-      divider.style.left = position + '%';
+    position = Math.max(0, Math.min(100, position));
+    const mapWidth = map.getSize().x;
+    const dividerPosition = mapWidth * position / 100;
+    historicalPane.style.clip =
+        `rect(0px, ${dividerPosition}px, ${map.getSize().y}px, 0px)`;
+    currentPane.style.clip =
+        `rect(0px, ${mapWidth}px, ${map.getSize().y}px, ${dividerPosition}px)`;
+    divider.style.left = dividerPosition + 'px';
   }
 
   const SwipeControl = L.Control.extend({
@@ -146,12 +148,18 @@
           L.DomEvent.disableScrollPropagation(container);
           const slider = container.querySelector('#mapSwipe');
           slider.addEventListener('input', function() {
-              updateSlider(Number(this.value));
+              updateSlider(this.value);
           });
           return container;
       }
   });
   map.addControl(new SwipeControl());
+  map.on('move zoom resize', function() {
+    const slider = document.querySelector('#mapSwipe');
+    if (slider) {
+        updateSlider(Number(slider.value));
+    }
+  });
 
   const legend = L.control({
       position: 'bottomright'
@@ -167,8 +175,6 @@
           2006 Locations<br>
           <span style="color:#d73027;">●</span>
           Current Locations<br>
-          <span style="color:#fdae61;">●</span>
-          Planned Locations
       `;
       div.style.background = 'white';
       div.style.padding = '10px';

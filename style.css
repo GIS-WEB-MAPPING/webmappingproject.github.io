@@ -169,6 +169,7 @@ html, body {
     background: white;
     z-index: 1000;
     pointer-events: none;
+    transform: translateX(-50%);
 }
 
 .swipe-control {
