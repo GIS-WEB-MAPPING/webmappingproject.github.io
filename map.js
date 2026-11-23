@@ -12,6 +12,7 @@
   const historicalPane = map.createPane('historicalPane');
   historicalPane.style.zIndex = 410;
   historicalPane.style.pointerEvents = 'auto';
+
   const currentPane = map.createPane('currentPane');
   currentPane.style.zIndex = 420;
   currentPane.style.pointerEvents = 'auto';
@@ -92,17 +93,16 @@
   map.getContainer().appendChild(divider);
 
   function updateSlider(position) {
-      position = Math.max(0, Math.min(100, Number(position)));
-      const mapSize = map.getSize();
-      const dividerPosition = mapSize.x * position / 100;
-
-      historicalPane.style.clip =
-          `rect(0px, ${dividerPosition}px, ${mapSize.y}px, 0px)`;
-      currentPane.style.clip =
-          `rect(0px, ${mapSize.x}px, ${mapSize.y}px, ${dividerPosition}px)`;
-
-      divider.style.left = dividerPosition + 'px';
-  }
+    position = Math.max(0, Math.min(100, Number(position)));
+    const mapSize = map.getSize();
+    if (mapSize.x === 0 || mapSize.y === 0) return;
+    const dividerPosition = mapSize.x * position / 100;
+    historicalPane.style.clipPath =
+        `inset(0 ${100 - position}% 0 0)`;
+    currentPane.style.clipPath =
+        `inset(0 0 0 ${position}%)`;
+    divider.style.left = dividerPosition + 'px';
+}
 
   const SwipeControl = L.Control.extend({
       options: {
@@ -151,7 +151,7 @@
 
   updateSlider(50);
 
-  setTimeout(function() {
-      map.invalidateSize();
-      updateSlider(50);
-  }, 300);
+  map.whenReady(function() {
+    map.invalidateSize();
+    updateSlider(50);
+  });
