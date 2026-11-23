@@ -11,8 +11,10 @@
 
   const historicalPane = map.createPane('historicalPane');
   historicalPane.style.zIndex = 410;
+  historicalPane.style.pointerEvents = 'auto';
   const currentPane = map.createPane('currentPane');
   currentPane.style.zIndex = 420;
+  currentPane.style.pointerEvents = 'auto';
 
   const locationsURL =
       'https://services9.arcgis.com/SfvtKAxCn62UWpRg/arcgis/rest/services/Buc_ee_s_Locations_WFL1/FeatureServer/0';
@@ -82,41 +84,25 @@
   currentLayer.addTo(map);
   plannedLayer.addTo(map);
 
-  historicalLayer.on('load', function() {
-      console.log('2006 historical locations loaded');
-  });
-  currentLayer.on('load', function() {
-      console.log('Current Buc-ee locations loaded');
-  });
-  plannedLayer.on('load', function() {
-      console.log('Planned Buc-ee locations loaded');
-  });
-  historicalLayer.on('requesterror', function(error) {
-      console.error('Historical layer error:', error);
-  });
-  currentLayer.on('requesterror', function(error) {
-      console.error('Current layer error:', error);
-  });
-  plannedLayer.on('requesterror', function(error) {
-      console.error('Planned layer error:', error);
-  });
 
-  const divider = L.DomUtil.create(
+    const divider = L.DomUtil.create(
       'div',
       'swipe-divider'
   );
   map.getContainer().appendChild(divider);
+
   function updateSlider(position) {
-    position = Math.max(0, Math.min(100, position));
-    const mapSize = map.getSize();
-    const dividerPosition = position;
-    historicalPane.style.clipPath =
-        `inset(0 ${100 - dividerPosition}% 0 0)`;
-    currentPane.style.clipPath =
-        `inset(0 0 0 ${dividerPosition}%)`;
-    divider.style.left =
-        `${mapSize.x * dividerPosition / 100}px`;
-      }
+      position = Math.max(0, Math.min(100, Number(position)));
+      const mapSize = map.getSize();
+      const dividerPosition = mapSize.x * position / 100;
+
+      historicalPane.style.clip =
+          `rect(0px, ${dividerPosition}px, ${mapSize.y}px, 0px)`;
+      currentPane.style.clip =
+          `rect(0px, ${mapSize.x}px, ${mapSize.y}px, ${dividerPosition}px)`;
+
+      divider.style.left = dividerPosition + 'px';
+  }
 
   const SwipeControl = L.Control.extend({
       options: {
@@ -131,7 +117,6 @@
               <label for="mapSwipe">
                   Compare Buc-ee's Growth
               </label>
-
               <input
                   type="range"
                   id="mapSwipe"
@@ -154,63 +139,19 @@
           return container;
       }
   });
-  map.addControl(new SwipeControl());
-  map.on('move zoom resize', function() {
-    const slider = document.querySelector('#mapSwipe');
-    if (slider) {
-        updateSlider(Number(slider.value));
-    }
-  });
 
-  const legend = L.control({
-      position: 'bottomright'
+  map.addControl(new SwipeControl());
+
+  map.on('move zoom resize', function() {
+      const slider = document.querySelector('#mapSwipe');
+      if (slider) {
+          updateSlider(slider.value);
+      }
   });
-  legend.onAdd = function(map) {
-      const div = L.DomUtil.create(
-          'div',
-          'info legend'
-      );
-      div.innerHTML = `
-          <strong>Buc-ee's Locations</strong><br>
-          <span style="color:#2166ac;">●</span>
-          2006 Locations<br>
-          <span style="color:#d73027;">●</span>
-          Current Locations<br>
-      `;
-      div.style.background = 'white';
-      div.style.padding = '10px';
-      div.style.borderRadius = '5px';
-      div.style.lineHeight = '1.7';
-      return div;
-  };
-  legend.addTo(map);
 
   updateSlider(50);
 
   setTimeout(function() {
       map.invalidateSize();
-  }, 200);
-
-  historicalLayer.on('loading', function() {
-    console.log('Loading historical locations...');
-});
-
-historicalLayer.on('load', function() {
-    console.log('Historical locations loaded!');
-});
-
-currentLayer.on('loading', function() {
-    console.log('Loading current locations...');
-});
-
-currentLayer.on('load', function() {
-    console.log('Current locations loaded!');
-});
-
-plannedLayer.on('loading', function() {
-    console.log('Loading planned locations...');
-});
-
-plannedLayer.on('load', function() {
-    console.log('Planned locations loaded!');
-});
+      updateSlider(50);
+  }, 300);
