@@ -108,14 +108,15 @@
   map.getContainer().appendChild(divider);
   function updateSlider(position) {
     position = Math.max(0, Math.min(100, position));
-    const mapWidth = map.getSize().x;
-    const dividerPosition = mapWidth * position / 100;
-    historicalPane.style.clip =
-        `rect(0px, ${dividerPosition}px, ${map.getSize().y}px, 0px)`;
-    currentPane.style.clip =
-        `rect(0px, ${mapWidth}px, ${map.getSize().y}px, ${dividerPosition}px)`;
-    divider.style.left = dividerPosition + 'px';
-  }
+    const mapSize = map.getSize();
+    const dividerPosition = position;
+    historicalPane.style.clipPath =
+        `inset(0 ${100 - dividerPosition}% 0 0)`;
+    currentPane.style.clipPath =
+        `inset(0 0 0 ${dividerPosition}%)`;
+    divider.style.left =
+        `${mapSize.x * dividerPosition / 100}px`;
+      }
 
   const SwipeControl = L.Control.extend({
       options: {
@@ -189,3 +190,27 @@
   setTimeout(function() {
       map.invalidateSize();
   }, 200);
+
+  historicalLayer.on('loading', function() {
+    console.log('Loading historical locations...');
+});
+
+historicalLayer.on('load', function() {
+    console.log('Historical locations loaded!');
+});
+
+currentLayer.on('loading', function() {
+    console.log('Loading current locations...');
+});
+
+currentLayer.on('load', function() {
+    console.log('Current locations loaded!');
+});
+
+plannedLayer.on('loading', function() {
+    console.log('Loading planned locations...');
+});
+
+plannedLayer.on('load', function() {
+    console.log('Planned locations loaded!');
+});
