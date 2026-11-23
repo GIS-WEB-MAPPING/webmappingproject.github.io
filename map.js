@@ -11,11 +11,11 @@
 
   const historicalPane = map.createPane('historicalPane');
   historicalPane.style.zIndex = 410;
-  historicalPane.style.pointerEvents = 'auto';
+  historicalPane.style.overflow = 'hidden';
 
   const currentPane = map.createPane('currentPane');
   currentPane.style.zIndex = 420;
-  currentPane.style.pointerEvents = 'auto';
+  currentPane.style.overflow = 'hidden';
 
   const locationsURL =
       'https://services9.arcgis.com/SfvtKAxCn62UWpRg/arcgis/rest/services/Buc_ee_s_Locations_WFL1/FeatureServer/0';
@@ -98,11 +98,11 @@
     if (mapSize.x === 0 || mapSize.y === 0) return;
     const dividerPosition = mapSize.x * position / 100;
     historicalPane.style.clipPath =
-        `inset(0 ${100 - position}% 0 0)`;
+        `inset(0px ${mapSize.x - dividerPosition}px 0px 0px)`;
     currentPane.style.clipPath =
-        `inset(0 0 0 ${position}%)`;
+        `inset(0px 0px 0px ${dividerPosition}px)`;
     divider.style.left = dividerPosition + 'px';
-}
+  }
 
   const SwipeControl = L.Control.extend({
       options: {
