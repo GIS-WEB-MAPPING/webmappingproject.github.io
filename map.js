@@ -11,11 +11,11 @@
 
   const historicalPane = map.createPane('historicalPane');
   historicalPane.style.zIndex = 410;
-  historicalPane.style.overflow = 'hidden';
+
 
   const currentPane = map.createPane('currentPane');
   currentPane.style.zIndex = 420;
-  currentPane.style.overflow = 'hidden';
+
 
   const locationsURL =
       'https://services9.arcgis.com/SfvtKAxCn62UWpRg/arcgis/rest/services/Buc_ee_s_Locations_WFL1/FeatureServer/0';
@@ -44,64 +44,101 @@
 
       pointToLayer: function(feature, latlng) {
           return L.circleMarker(latlng, {
+              pane: 'historicalPane',
               radius: 7,
               fillColor: '#2166ac',
               color: '#ffffff',
               weight: 1,
               fillOpacity: 0.9
           });
-      }
-  });
+        }
+    });
 
-  const currentLayer = L.esri.featureLayer({
-      url: locationsURL,
-      pane: 'currentPane',
-      pointToLayer: function(feature, latlng) {
-          return L.circleMarker(latlng, {
-              radius: 7,
-              fillColor: '#d73027',
-              color: '#ffffff',
-              weight: 1,
-              fillOpacity: 0.9
-          });
+    const currentLayer = L.esri.featureLayer({
+        url: locationsURL,
+        pane: 'currentPane',
+        pointToLayer: function(feature, latlng) {
+        return L.circleMarker(latlng, {
+            pane: 'currentPane',
+            radius: 7,
+            fillColor: '#d73027',
+            color: '#ffffff',
+            weight: 1,
+            fillOpacity: 0.9
+        });
       }
-  });
+    });
 
   const plannedLayer = L.esri.featureLayer({
       url: plannedURL,
       pane: 'currentPane',
       pointToLayer: function(feature, latlng) {
-          return L.circleMarker(latlng, {
-              radius: 7,
-              fillColor: '#fdae61',
-              color: '#ffffff',
-              weight: 1,
-              fillOpacity: 0.9
-          });
-      }
+      return L.circleMarker(latlng, {
+            pane: 'currentPane',
+            radius: 7,
+            fillColor: '#fdae61',
+            color: '#ffffff',
+            weight: 1,
+            fillOpacity: 0.9
+        });
+    }
   });
 
   historicalLayer.addTo(map);
   currentLayer.addTo(map);
   plannedLayer.addTo(map);
 
-
+  historicalLayer.on('load', function() {
+    const slider = document.querySelector('#mapSwipe');
+    if (slider) updateSlider(slider.value);
+  });
+  currentLayer.on('load', function() {
+      const slider = document.querySelector('#mapSwipe');
+      if (slider) updateSlider(slider.value);
+  });
+  plannedLayer.on('load', function() {
+      const slider = document.querySelector('#mapSwipe');
+      if (slider) updateSlider(slider.value);
+  });
     const divider = L.DomUtil.create(
       'div',
       'swipe-divider'
   );
   map.getContainer().appendChild(divider);
 
-  function updateSlider(position) {
-    position = Math.max(0, Math.min(100, Number(position)));
-    const mapSize = map.getSize();
-    if (mapSize.x === 0 || mapSize.y === 0) return;
-    const dividerPosition = mapSize.x * position / 100;
-    historicalPane.style.clipPath =
-        `inset(0px ${mapSize.x - dividerPosition}px 0px 0px)`;
-    currentPane.style.clipPath =
-        `inset(0px 0px 0px ${dividerPosition}px)`;
-    divider.style.left = dividerPosition + 'px';
+    function updateSlider(position) {
+      position = Math.max(0, Math.min(100, Number(position)));
+      const mapRect = map.getContainer().getBoundingClientRect();
+      const mapWidth = mapRect.width;
+      const mapHeight = mapRect.height;
+      if (mapWidth === 0 || mapHeight === 0) return;
+      const dividerPosition = mapWidth * position / 100;
+      const dividerX = mapRect.left + dividerPosition;
+      const historicalSVG =
+          historicalPane.querySelector('svg');
+      const currentSVG =
+          currentPane.querySelector('svg');
+      if (historicalSVG) {
+          const rect = historicalSVG.getBoundingClientRect();
+          const top = mapRect.top - rect.top;
+          const right = rect.right - dividerX;
+          const bottom = rect.bottom - mapRect.bottom;
+          const left = mapRect.left - rect.left;
+          historicalSVG.style.clipPath =
+              `inset(${top}px ${right}px ${bottom}px ${left}px)`;
+      }
+
+      if (currentSVG) {
+          const rect = currentSVG.getBoundingClientRect();
+          const top = mapRect.top - rect.top;
+          const right = rect.right - mapRect.right;
+          const bottom = rect.bottom - mapRect.bottom;
+          const left = dividerX - rect.left;
+          currentSVG.style.clipPath =
+              `inset(${top}px ${right}px ${bottom}px ${left}px)`;
+      }
+
+      divider.style.left = dividerPosition + 'px';
   }
 
   const SwipeControl = L.Control.extend({
